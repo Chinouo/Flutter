@@ -30,6 +30,24 @@ static bool canUpdate(Widget oldWidget, Widget newWidget) {
 ```
 
 ## StatelessWidget
+```dart
+StatelessElement createElement() => StatelessElement(this);
+
+  @protected
+  Widget build(BuildContext context);
+```
+### build方法
+这个很关键，框架通过调用这个方法把Widget插入到element树中。
+
+在三种情况下会调用这个方法：
+(文档也同时给吃了优化方案)
+
+1：首次把Widget插入到element树中。
+
+2：当Widget的父元素更换其配置信息
+
+3：当一个InheritedWidget的依赖更改。
+
 
 
 
