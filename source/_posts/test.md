@@ -60,8 +60,34 @@ StatelessElement createElement() => StatelessElement(this);
 
 State的信息在Widget build的时候可以同步调用，在Widget的生命周期内可以更换，用State.setState来更新状态。
 
-createState在StatefulWidget在树中移除，之后在插入时调用，创建一个新的State。
+createState在StatefulWidget在树中移除，之后再次插入时调用，创建一个新的State。
 
+使用GlobalKey可以在移动Widget树时保持State对象，文档中说这样做不会重新在子树构建element，而是直接复用该element嫁接上去。
+
+## 性能问题
+### 两种基础类型的StatefulWidget
+`第一种：在initState中分配资源，在dispose销毁资源，但不使用InheritedWidget，setState`
+
+性能开销小，构建一次但不会再更新内容。
+
+`第二种：使用InheritedWidget，setState`
+
+经常在rebuild。
+
+### 解决方案
+(1)把State送给叶子节点让他更新，防止整个Widget重构。
+
+(2)简化树的深度广度，一个StatefulWidget尽量不要build太多其他Widget。
+
+(3)如果子树不变，缓存起来重用。一般把其封装到一个child参数里面。(这部分文档有点难懂)
+
+(4)使用const
+
+(5)避免更改已经创建好的子树深度或者其里面任何一个Widget类型。
+
+(6)非得改变树的深度，那么可以用GlobalKey，把共有子树部分用Widget包装。
+
+**道理很简单，能复用就复用，能不变就不变。**
 
 
 
