@@ -89,7 +89,14 @@ createState在StatefulWidget在树中移除，之后再次插入时调用，创�
 
 **道理很简单，能复用就复用，能不变就不变。**
 
+`_StateLifecycle枚举类型有  created, initialized,  ready,  defunct四种，分别对应State的创建，init，已经build，已经dispose，供debug使用。`
 
+# ProxyWidget
+## ParentDataWidget
+## InheritedWidget
 
-
+# RenderObjectWidget
+## LeafRenderObjectWidget
+## SingleChildRenderObjectWidget
+## MultiChildRenderObjectWidget
 
