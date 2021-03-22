@@ -36,6 +36,11 @@ StatelessElement createElement() => StatelessElement(this);
   @protected
   Widget build(BuildContext context);
 ```
+### createElement方法
+创造管理widget在树中位置的方法。
+
+
+
 ### build方法
 这个很关键，框架通过调用这个方法把Widget插入到element树中。
 
@@ -47,9 +52,15 @@ StatelessElement createElement() => StatelessElement(this);
 2：当Widget的父元素更换其配置信息
 
 3：当一个InheritedWidget的依赖更改。
+#### BuildContext参数
+包含了关于组件应该在树中何处被创建，一个Widget可能是由多个不同的BuildContext组成，比如widget一次性在树的多个位置被插入或者移动。
 
+# StatefulWidget
+创建的是有一般是要写两个类，一个私有的管理State的类，一个用来调用creatState的类(有时候可以通过Stream，ChangeNotifier实现对State的订阅)。build过程是递归的。StatefulWidget是不变的，但State可变的。一个StatefulWidget可以关联多个State对象。
 
+State的信息在Widget build的时候可以同步调用，在Widget的生命周期内可以更换，用State.setState来更新状态。
 
+createState在StatefulWidget在树中移除，之后在插入时调用，创建一个新的State。
 
 
 
