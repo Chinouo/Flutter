@@ -65,4 +65,55 @@ State和BuildContext有着永久的联系，State不会改变BuildContext，但�
     _element!.markNeedsBuild();
  }
 ```
+不建议在setState里包含太多运算过程。可通过State是否为mounted来进行合法使用该方法。
+
+---
+
+```dart
+  @protected
+  @mustCallSuper
+  void deactivate() {}
+```
+该方法在对象从树中移除时调用。
+文档中有框架对树嫁接时对该方法的处理过程。(看不懂，暂时打住)
+
+```dart
+  @protected
+  @mustCallSuper
+  void dispose() {
+    assert(_debugLifecycleState == _StateLifecycle.ready);
+    assert(() {
+      _debugLifecycleState = _StateLifecycle.defunct;
+      return true;
+    }());
+  }
+```
+当State确定永远不会build时，调用该方法永久销毁。
+
+# `build`方法
+描述通过Widget配置的用户界面。
+
+在以下多种情况被调用。
+
+### (1)`initState`被调用后
+
+### (2)`didUpdateWidget`被调用后
+
+### (3)`setState`被调用后
+
+### (4)`State`的依赖(`dependency`)更改时
+
+### (5)`deactivate`调用后又重新插入树中
+
+框架调用这个的返回值来更新子树，是否更新某个根节点取决于是否调用Widget.canUpdate的方法。
+`BuildContext`包含树的位置，并且总是和State的context属性相同。
+
+# build的设计思路
+## `为什么把build设计在State内而不是StatefulWidget？`
+官方解释： gives developers more flexibility when subclassing
+[StatefulWidget].
+
+问题1：如果带State参数的build在StatefulWidget，如果子类不需要State，但是重载的缘故你又不得不写个State给子类build。(有点晦涩，先留个印象吧)
+问题2：父类重构时，无法使用更新后的状态。(没搞懂)
+
 

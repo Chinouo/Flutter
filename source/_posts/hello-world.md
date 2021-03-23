@@ -7,8 +7,10 @@ Wel2come to [Hexo](https://hexo.io/)! This is your very first post. Check [docum
 
 ### Create a new post
 
-``` bash
+``` dart
 $ hexo new "My New Post"
+#include <iostream>
+using namespace
 ```
 
 More info: [Writing](https://hexo.io/docs/writing.html)
