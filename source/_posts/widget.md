@@ -92,11 +92,51 @@ createState在StatefulWidget在树中移除，之后再次插入时调用，创�
 `_StateLifecycle枚举类型有  created, initialized,  ready,  defunct四种，分别对应State的创建，init，已经build，已经dispose，供debug使用。`
 
 # ProxyWidget
+
+只有一个child的Widget
+
 ## ParentDataWidget
+
+基类，hook ParentData的信息给
+RenderObjectWidget的children。(没搞懂)
+
+---
+
 ## InheritedWidget
 
+---
+
 # RenderObjectWidget
+给RenderObjectElement提供configuration
+```dart
+const RenderObjectWidget({Key? key}) : super(key: key);
+
+  RenderObjectElement createElement();
+
+    @protected
+  @factory
+  RenderObject createRenderObject(BuildContext context);
+
+//复制configuration给RenderObject
+  @protected
+  void updateRenderObject(
+      BuildContext context, covariant RenderObject renderObject) {}
+
+      @protected
+  void didUnmountRenderObject(covariant RenderObject renderObject) {}
+```
+
+
+
 ## LeafRenderObjectWidget
+继承RenderObjectWidget，Leaf即叶子结点。
 ## SingleChildRenderObjectWidget
+如其名。
 ## MultiChildRenderObjectWidget
+可作为RenderObjectWidget的父类，提供存储RenderObjectWidget `S`，但是没有更新逻辑。
+子类必须mixes `ContainerRenderObjectMixin`,
+
+---
+
+## 上述几个Widget涉及到object.dart(3000行)，还没看过，暂时留个印象。framework.dart2000行后是关于[*** {% post_link 'element' %} ***]的讲解了。
 
