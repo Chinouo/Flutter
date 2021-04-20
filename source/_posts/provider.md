@@ -20,3 +20,17 @@ tags:
       final localeprovider = Provider.of<LocaleProvider>(context, listen: false);
       localeprovider.setLocale(L10n.all[1]);
 ```
+## 多个Provider情况
+防止多层provider的嵌套对可读性造成的影响。
+```dart
+       Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ],
+      builder: (context, child) {
+        final themeProvider = Provider.of<ThemeProvider>(context);
+        final localeprovider = Provider.of<LocaleProvider>(context);
+        return MaterialApp(...);
+```
