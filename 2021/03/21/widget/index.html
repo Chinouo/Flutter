@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="本文是个人对Flutter进行尝试后，想对框架进行更深一步的探究而写，纯新手，如有错误欢迎指正。 Widget第一次接触Flutter的Demo就看到各种Widget，学习中也掌握了各种Widget的使用方法，但是构建Widget的时候出了很多没见过的类型，下面就对这些内容进行解读。  Widget继承于DiagnosticableTree，是个抽象类。(源码100行左右) Describes t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Widget详解">
+<meta property="og:url" content="https://chinouo.github.io/Flutter/2021/03/21/widget/index.html">
+<meta property="og:site_name" content="Chinouo_Flutter">
+<meta property="og:description" content="本文是个人对Flutter进行尝试后，想对框架进行更深一步的探究而写，纯新手，如有错误欢迎指正。 Widget第一次接触Flutter的Demo就看到各种Widget，学习中也掌握了各种Widget的使用方法，但是构建Widget的时候出了很多没见过的类型，下面就对这些内容进行解读。  Widget继承于DiagnosticableTree，是个抽象类。(源码100行左右) Describes t">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-21T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-05-12T14:11:59.473Z">
+<meta property="article:author" content="Chinouo">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/Flutter/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/Flutter/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/Flutter/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Widget详解</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/Flutter/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/Flutter/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/Flutter/">首页</a></li>
+         
+          <li><a href="/Flutter/about/">关于</a></li>
+         
+          <li><a href="/Flutter/archives/">归档</a></li>
+         
+          <li><a href="/Flutter/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/Flutter/2021/03/21/Key/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://chinouo.github.io/Flutter/2021/03/21/widget/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&text=Widget详解"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&is_video=false&description=Widget详解"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Widget详解&body=Check out this article: https://chinouo.github.io/Flutter/2021/03/21/widget/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&name=Widget详解&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://chinouo.github.io/Flutter/2021/03/21/widget/&t=Widget详解"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Widget"><span class="toc-number">1.</span> <span class="toc-text">Widget</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#StatelessWidget"><span class="toc-number">1.1.</span> <span class="toc-text">StatelessWidget</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#createElement%E6%96%B9%E6%B3%95"><span class="toc-number">1.1.1.</span> <span class="toc-text">createElement方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#build%E6%96%B9%E6%B3%95"><span class="toc-number">1.1.2.</span> <span class="toc-text">build方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BuildContext%E5%8F%82%E6%95%B0"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">BuildContext参数</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#StatefulWidget"><span class="toc-number">2.</span> <span class="toc-text">StatefulWidget</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="toc-number">2.1.</span> <span class="toc-text">性能问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E7%A7%8D%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B%E7%9A%84StatefulWidget"><span class="toc-number">2.1.1.</span> <span class="toc-text">两种基础类型的StatefulWidget</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">2.1.2.</span> <span class="toc-text">解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ProxyWidget"><span class="toc-number">3.</span> <span class="toc-text">ProxyWidget</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ParentDataWidget"><span class="toc-number">3.1.</span> <span class="toc-text">ParentDataWidget</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InheritedWidget"><span class="toc-number">3.2.</span> <span class="toc-text">InheritedWidget</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RenderObjectWidget"><span class="toc-number">4.</span> <span class="toc-text">RenderObjectWidget</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#LeafRenderObjectWidget"><span class="toc-number">4.1.</span> <span class="toc-text">LeafRenderObjectWidget</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SingleChildRenderObjectWidget"><span class="toc-number">4.2.</span> <span class="toc-text">SingleChildRenderObjectWidget</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MultiChildRenderObjectWidget"><span class="toc-number">4.3.</span> <span class="toc-text">MultiChildRenderObjectWidget</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E8%BF%B0%E5%87%A0%E4%B8%AAWidget%E6%B6%89%E5%8F%8A%E5%88%B0object-dart-3000%E8%A1%8C-%EF%BC%8C%E8%BF%98%E6%B2%A1%E7%9C%8B%E8%BF%87%EF%BC%8C%E6%9A%82%E6%97%B6%E7%95%99%E4%B8%AA%E5%8D%B0%E8%B1%A1%E3%80%82framework-dart2000%E8%A1%8C%E5%90%8E%E6%98%AF%E5%85%B3%E4%BA%8E-%E7%9A%84%E8%AE%B2%E8%A7%A3%E4%BA%86%E3%80%82"><span class="toc-number">4.4.</span> <span class="toc-text">上述几个Widget涉及到object.dart(3000行)，还没看过，暂时留个印象。framework.dart2000行后是关于[*** element ***]的讲解了。</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Widget详解
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Chinouo</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-03-21T00:00:00.000Z" itemprop="datePublished">2021-03-21</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本文是个人对Flutter进行尝试后，想对框架进行更深一步的探究而写，纯新手，如有错误欢迎指正。</p>
+<h1 id="Widget"><a href="#Widget" class="headerlink" title="Widget"></a>Widget</h1><p>第一次接触Flutter的Demo就看到各种Widget，学习中也掌握了各种Widget的使用方法，但是构建Widget的时候出了很多没见过的类型，下面就对这些内容进行解读。</p>
+<p> <code>Widget继承于DiagnosticableTree，是个抽象类。</code>(源码100行左右)</p>
+<p><code>Describes the configuration for an [Element].</code></p>
+<p>这个就是Widget存在的目的。<br>Widget是永远不变的，但是他可以inflated into(不知道怎么翻译合适)element，让其管理渲染树。</p>
+<p>两个Widget的key和runtimeType如果==的话，那么新的Widget会在element那边取代掉旧的Widget。二者有一个不同的话，那么会造一个新的element。</p>
+<p>这边列出几个重要的成员。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> Key</span><br><span class="line"></span><br><span class="line"><span class="built_in">Element</span> createElement();</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> <span class="built_in">bool</span> canUpdate(Widget oldWidget, Widget newWidget) &#123;</span><br><span class="line">    <span class="keyword">return</span> oldWidget.runtimeType == newWidget.runtimeType</span><br><span class="line">        &amp;&amp; oldWidget.key == newWidget.key;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="StatelessWidget"><a href="#StatelessWidget" class="headerlink" title="StatelessWidget"></a>StatelessWidget</h2><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">StatelessElement createElement() =&gt; StatelessElement(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@protected</span></span><br><span class="line">  Widget build(BuildContext context);</span><br></pre></td></tr></table></figure>
+<h3 id="createElement方法"><a href="#createElement方法" class="headerlink" title="createElement方法"></a>createElement方法</h3><p>创造管理widget在树中位置的方法。</p>
+<h3 id="build方法"><a href="#build方法" class="headerlink" title="build方法"></a>build方法</h3><p>这个很关键，框架通过调用这个方法把Widget插入到element树中。</p>
+<p>在三种情况下会调用这个方法：<br>(文档也同时给吃了优化方案)</p>
+<p>1：首次把Widget插入到element树中。</p>
+<p>2：当Widget的父元素更换其配置信息</p>
+<p>3：当一个InheritedWidget的依赖更改。</p>
+<h4 id="BuildContext参数"><a href="#BuildContext参数" class="headerlink" title="BuildContext参数"></a>BuildContext参数</h4><p>包含了关于组件应该在树中何处被创建，一个Widget可能是由多个不同的BuildContext组成，比如widget一次性在树的多个位置被插入或者移动。</p>
+<h1 id="StatefulWidget"><a href="#StatefulWidget" class="headerlink" title="StatefulWidget"></a>StatefulWidget</h1><p>创建的是有一般是要写两个类，一个私有的管理State的类，一个用来调用creatState的类(有时候可以通过Stream，ChangeNotifier实现对State的订阅)。build过程是递归的。StatefulWidget是不变的，但State可变的。一个StatefulWidget可以关联多个State对象。</p>
+<p>State的信息在Widget build的时候可以同步调用，在Widget的生命周期内可以更换，用State.setState来更新状态。</p>
+<p>createState在StatefulWidget在树中移除，之后再次插入时调用，创建一个新的State。</p>
+<p>使用GlobalKey可以在移动Widget树时保持State对象，文档中说这样做不会重新在子树构建element，而是直接复用该element嫁接上去。</p>
+<h2 id="性能问题"><a href="#性能问题" class="headerlink" title="性能问题"></a>性能问题</h2><h3 id="两种基础类型的StatefulWidget"><a href="#两种基础类型的StatefulWidget" class="headerlink" title="两种基础类型的StatefulWidget"></a>两种基础类型的StatefulWidget</h3><p><code>第一种：在initState中分配资源，在dispose销毁资源，但不使用InheritedWidget，setState</code></p>
+<p>性能开销小，构建一次但不会再更新内容。</p>
+<p><code>第二种：使用InheritedWidget，setState</code></p>
+<p>经常在rebuild。</p>
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p>(1)把State送给叶子节点让他更新，防止整个Widget重构。</p>
+<p>(2)简化树的深度广度，一个StatefulWidget尽量不要build太多其他Widget。</p>
+<p>(3)如果子树不变，缓存起来重用。一般把其封装到一个child参数里面。(这部分文档有点难懂)</p>
+<p>(4)使用const</p>
+<p>(5)避免更改已经创建好的子树深度或者其里面任何一个Widget类型。</p>
+<p>(6)非得改变树的深度，那么可以用GlobalKey，把共有子树部分用Widget包装。</p>
+<p><strong>道理很简单，能复用就复用，能不变就不变。</strong></p>
+<p><code>_StateLifecycle枚举类型有  created, initialized,  ready,  defunct四种，分别对应State的创建，init，已经build，已经dispose，供debug使用。</code></p>
+<h1 id="ProxyWidget"><a href="#ProxyWidget" class="headerlink" title="ProxyWidget"></a>ProxyWidget</h1><p>只有一个child的Widget</p>
+<h2 id="ParentDataWidget"><a href="#ParentDataWidget" class="headerlink" title="ParentDataWidget"></a>ParentDataWidget</h2><p>基类，hook ParentData的信息给<br>RenderObjectWidget的children。(没搞懂)</p>
+<hr>
+<h2 id="InheritedWidget"><a href="#InheritedWidget" class="headerlink" title="InheritedWidget"></a>InheritedWidget</h2><hr>
+<h1 id="RenderObjectWidget"><a href="#RenderObjectWidget" class="headerlink" title="RenderObjectWidget"></a>RenderObjectWidget</h1><p>给RenderObjectElement提供configuration</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> RenderObjectWidget(&#123;Key? key&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  RenderObjectElement createElement();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@protected</span></span><br><span class="line">  <span class="meta">@factory</span></span><br><span class="line">  RenderObject createRenderObject(BuildContext context);</span><br><span class="line"></span><br><span class="line"><span class="comment">//复制configuration给RenderObject</span></span><br><span class="line">  <span class="meta">@protected</span></span><br><span class="line">  <span class="keyword">void</span> updateRenderObject(</span><br><span class="line">      BuildContext context, <span class="keyword">covariant</span> RenderObject renderObject) &#123;&#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@protected</span></span><br><span class="line">  <span class="keyword">void</span> didUnmountRenderObject(<span class="keyword">covariant</span> RenderObject renderObject) &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="LeafRenderObjectWidget"><a href="#LeafRenderObjectWidget" class="headerlink" title="LeafRenderObjectWidget"></a>LeafRenderObjectWidget</h2><p>继承RenderObjectWidget，Leaf即叶子结点。</p>
+<h2 id="SingleChildRenderObjectWidget"><a href="#SingleChildRenderObjectWidget" class="headerlink" title="SingleChildRenderObjectWidget"></a>SingleChildRenderObjectWidget</h2><p>如其名。</p>
+<h2 id="MultiChildRenderObjectWidget"><a href="#MultiChildRenderObjectWidget" class="headerlink" title="MultiChildRenderObjectWidget"></a>MultiChildRenderObjectWidget</h2><p>可作为RenderObjectWidget的父类，提供存储RenderObjectWidget <code>S</code>，但是没有更新逻辑。<br>子类必须mixes <code>ContainerRenderObjectMixin</code>,</p>
+<hr>
+<h2 id="上述几个Widget涉及到object-dart-3000行-，还没看过，暂时留个印象。framework-dart2000行后是关于-的讲解了。"><a href="#上述几个Widget涉及到object-dart-3000行-，还没看过，暂时留个印象。framework-dart2000行后是关于-的讲解了。" class="headerlink" title="上述几个Widget涉及到object.dart(3000行)，还没看过，暂时留个印象。framework.dart2000行后是关于[***  ***]的讲解了。"></a>上述几个Widget涉及到object.dart(3000行)，还没看过，暂时留个印象。framework.dart2000行后是关于[*** <a href="/Flutter/2021/03/22/element/" title="element">element</a> ***]的讲解了。</h2>
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/Flutter/">首页</a></li>
+         
+          <li><a href="/Flutter/about/">关于</a></li>
+         
+          <li><a href="/Flutter/archives/">归档</a></li>
+         
+          <li><a href="/Flutter/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Widget"><span class="toc-number">1.</span> <span class="toc-text">Widget</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#StatelessWidget"><span class="toc-number">1.1.</span> <span class="toc-text">StatelessWidget</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#createElement%E6%96%B9%E6%B3%95"><span class="toc-number">1.1.1.</span> <span class="toc-text">createElement方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#build%E6%96%B9%E6%B3%95"><span class="toc-number">1.1.2.</span> <span class="toc-text">build方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#BuildContext%E5%8F%82%E6%95%B0"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">BuildContext参数</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#StatefulWidget"><span class="toc-number">2.</span> <span class="toc-text">StatefulWidget</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="toc-number">2.1.</span> <span class="toc-text">性能问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E7%A7%8D%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B%E7%9A%84StatefulWidget"><span class="toc-number">2.1.1.</span> <span class="toc-text">两种基础类型的StatefulWidget</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">2.1.2.</span> <span class="toc-text">解决方案</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ProxyWidget"><span class="toc-number">3.</span> <span class="toc-text">ProxyWidget</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#ParentDataWidget"><span class="toc-number">3.1.</span> <span class="toc-text">ParentDataWidget</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InheritedWidget"><span class="toc-number">3.2.</span> <span class="toc-text">InheritedWidget</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#RenderObjectWidget"><span class="toc-number">4.</span> <span class="toc-text">RenderObjectWidget</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#LeafRenderObjectWidget"><span class="toc-number">4.1.</span> <span class="toc-text">LeafRenderObjectWidget</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#SingleChildRenderObjectWidget"><span class="toc-number">4.2.</span> <span class="toc-text">SingleChildRenderObjectWidget</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MultiChildRenderObjectWidget"><span class="toc-number">4.3.</span> <span class="toc-text">MultiChildRenderObjectWidget</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8A%E8%BF%B0%E5%87%A0%E4%B8%AAWidget%E6%B6%89%E5%8F%8A%E5%88%B0object-dart-3000%E8%A1%8C-%EF%BC%8C%E8%BF%98%E6%B2%A1%E7%9C%8B%E8%BF%87%EF%BC%8C%E6%9A%82%E6%97%B6%E7%95%99%E4%B8%AA%E5%8D%B0%E8%B1%A1%E3%80%82framework-dart2000%E8%A1%8C%E5%90%8E%E6%98%AF%E5%85%B3%E4%BA%8E-%E7%9A%84%E8%AE%B2%E8%A7%A3%E4%BA%86%E3%80%82"><span class="toc-number">4.4.</span> <span class="toc-text">上述几个Widget涉及到object.dart(3000行)，还没看过，暂时留个印象。framework.dart2000行后是关于[*** element ***]的讲解了。</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://chinouo.github.io/Flutter/2021/03/21/widget/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&text=Widget详解"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&is_video=false&description=Widget详解"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Widget详解&body=Check out this article: https://chinouo.github.io/Flutter/2021/03/21/widget/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&title=Widget详解"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://chinouo.github.io/Flutter/2021/03/21/widget/&name=Widget详解&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://chinouo.github.io/Flutter/2021/03/21/widget/&t=Widget详解"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    Chinouo
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/Flutter/">首页</a></li>
+         
+          <li><a href="/Flutter/about/">关于</a></li>
+         
+          <li><a href="/Flutter/archives/">归档</a></li>
+         
+          <li><a href="/Flutter/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/Flutter/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/Flutter/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/Flutter/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/Flutter/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/Flutter/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/Flutter/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>

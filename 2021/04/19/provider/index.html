@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Provider状态管理的一个插件，通过InheritWidget等方法实现状态更新。 实现过程首先写一个Provider类继承于ChangeNotifier，通过方法内调用notifyListener()来通知更新。 最顶层在需要数据的组件上层，Wrap一个ChangeNotifierProvider，其中create形参传入数据Provider对象，builder形参构建所需组件。 数据更新通">
+<meta property="og:type" content="article">
+<meta property="og:title" content="provider">
+<meta property="og:url" content="https://chinouo.github.io/Flutter/2021/04/19/provider/index.html">
+<meta property="og:site_name" content="Chinouo_Flutter">
+<meta property="og:description" content="Provider状态管理的一个插件，通过InheritWidget等方法实现状态更新。 实现过程首先写一个Provider类继承于ChangeNotifier，通过方法内调用notifyListener()来通知更新。 最顶层在需要数据的组件上层，Wrap一个ChangeNotifierProvider，其中create形参传入数据Provider对象，builder形参构建所需组件。 数据更新通">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-19T22:25:09.000Z">
+<meta property="article:modified_time" content="2021-05-12T14:11:59.473Z">
+<meta property="article:author" content="Chinouo">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/Flutter/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/Flutter/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/Flutter/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>provider</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/Flutter/css/style.css">
+
+    <!-- persian styles -->
+    
+      
+<link rel="stylesheet" href="/Flutter/css/rtl.css">
+
+    
+    <!-- rss -->
+    
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/Flutter/">首页</a></li>
+         
+          <li><a href="/Flutter/about/">关于</a></li>
+         
+          <li><a href="/Flutter/archives/">归档</a></li>
+         
+          <li><a href="/Flutter/projects_url">项目</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/Flutter/2021/04/19/intl/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/Flutter/2021/03/22/element/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://chinouo.github.io/Flutter/2021/04/19/provider/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&text=provider"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&is_video=false&description=provider"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=provider&body=Check out this article: https://chinouo.github.io/Flutter/2021/04/19/provider/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&name=provider&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://chinouo.github.io/Flutter/2021/04/19/provider/&t=provider"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Provider"><span class="toc-number">1.</span> <span class="toc-text">Provider</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">实现过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E9%A1%B6%E5%B1%82"><span class="toc-number">1.2.</span> <span class="toc-text">最顶层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0"><span class="toc-number">1.3.</span> <span class="toc-text">数据更新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AAProvider%E6%83%85%E5%86%B5"><span class="toc-number">1.4.</span> <span class="toc-text">多个Provider情况</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        provider
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Chinouo</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2021-04-19T22:25:09.000Z" itemprop="datePublished">2021-04-19</time>
+        
+      
+    </div>
+
+
+      
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="Provider"><a href="#Provider" class="headerlink" title="Provider"></a>Provider</h1><p>状态管理的一个插件，通过InheritWidget等方法实现状态更新。</p>
+<h2 id="实现过程"><a href="#实现过程" class="headerlink" title="实现过程"></a>实现过程</h2><p>首先写一个Provider类继承于ChangeNotifier，通过方法内调用notifyListener()来通知更新。</p>
+<h2 id="最顶层"><a href="#最顶层" class="headerlink" title="最顶层"></a>最顶层</h2><p>在需要数据的组件上层，Wrap一个ChangeNotifierProvider，<br>其中create形参传入数据Provider对象，builder形参构建所需组件。</p>
+<h2 id="数据更新"><a href="#数据更新" class="headerlink" title="数据更新"></a>数据更新</h2><p>通过使用如下方法访问数据</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> localeprovider = Provider.of&lt;LocaleProvider&gt;(context, listen: <span class="keyword">false</span>);</span><br><span class="line">localeprovider.setLocale(L10n.all[<span class="number">1</span>]);</span><br></pre></td></tr></table></figure>
+<h2 id="多个Provider情况"><a href="#多个Provider情况" class="headerlink" title="多个Provider情况"></a>多个Provider情况</h2><p>防止多层provider的嵌套对可读性造成的影响。</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">   Widget build(BuildContext context) &#123;</span><br><span class="line"><span class="keyword">return</span> MultiProvider(</span><br><span class="line">  providers: [</span><br><span class="line">    ChangeNotifierProvider(create: (_) =&gt; LocaleProvider()),</span><br><span class="line">    ChangeNotifierProvider(create: (_) =&gt; ThemeProvider()),</span><br><span class="line">  ],</span><br><span class="line">  builder: (context, child) &#123;</span><br><span class="line">    <span class="keyword">final</span> themeProvider = Provider.of&lt;ThemeProvider&gt;(context);</span><br><span class="line">    <span class="keyword">final</span> localeprovider = Provider.of&lt;LocaleProvider&gt;(context);</span><br><span class="line">    <span class="keyword">return</span> MaterialApp(...);</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/Flutter/">首页</a></li>
+         
+          <li><a href="/Flutter/about/">关于</a></li>
+         
+          <li><a href="/Flutter/archives/">归档</a></li>
+         
+          <li><a href="/Flutter/projects_url">项目</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Provider"><span class="toc-number">1.</span> <span class="toc-text">Provider</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">实现过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E9%A1%B6%E5%B1%82"><span class="toc-number">1.2.</span> <span class="toc-text">最顶层</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E6%9B%B4%E6%96%B0"><span class="toc-number">1.3.</span> <span class="toc-text">数据更新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AAProvider%E6%83%85%E5%86%B5"><span class="toc-number">1.4.</span> <span class="toc-text">多个Provider情况</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://chinouo.github.io/Flutter/2021/04/19/provider/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&text=provider"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&is_video=false&description=provider"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=provider&body=Check out this article: https://chinouo.github.io/Flutter/2021/04/19/provider/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&title=provider"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://chinouo.github.io/Flutter/2021/04/19/provider/&name=provider&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://chinouo.github.io/Flutter/2021/04/19/provider/&t=provider"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2021
+    Chinouo
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/Flutter/">首页</a></li>
+         
+          <li><a href="/Flutter/about/">关于</a></li>
+         
+          <li><a href="/Flutter/archives/">归档</a></li>
+         
+          <li><a href="/Flutter/projects_url">项目</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+<link rel="stylesheet" href="/Flutter/lib/font-awesome/css/all.min.css">
+
+
+<link rel="stylesheet" href="/Flutter/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+    <!-- jquery -->
+
+<script src="/Flutter/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/Flutter/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+<!-- clipboard -->
+
+  
+<script src="/Flutter/lib/clipboard/clipboard.min.js"></script>
+
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"复制到粘贴板!\">";
+    btn += '<i class="far fa-clone"></i>';
+    btn += '</span>'; 
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "复制成功!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/Flutter/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Umami Analytics -->
+
+<!-- Disqus Comments -->
+
+
+</body>
+</html>
